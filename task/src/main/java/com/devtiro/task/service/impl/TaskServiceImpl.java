@@ -1,14 +1,14 @@
 package com.devtiro.task.service.impl;
 
-import java.time.Instant;
-
-import org.springframework.stereotype.Service;
-
 import com.devtiro.task.domain.CreateTaskRequest;
 import com.devtiro.task.domain.entity.Task;
 import com.devtiro.task.domain.entity.TaskStatus;
 import com.devtiro.task.repository.TaskRepository;
 import com.devtiro.task.service.TaskService;
+import java.time.Instant;
+import java.util.List;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -35,5 +35,10 @@ public class TaskServiceImpl implements TaskService {
         );
 
         return taskRepository.save(task);
+    }
+
+    @Override
+    public List<Task> listTasks() {
+        return taskRepository.findAll(Sort.by(Sort.Direction.ASC, "created"));
     }
 }
