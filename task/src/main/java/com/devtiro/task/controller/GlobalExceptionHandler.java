@@ -1,7 +1,7 @@
 package com.devtiro.task.controller;
 
 import com.devtiro.task.domain.dto.ErrorResponseDto;
-
+import com.devtiro.task.exception.TaskNotFoundException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +26,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
             new ErrorResponseDto(message),
             HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(TaskNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleTaskNotFound(
+        TaskNotFoundException ex
+    ) {
+        return ResponseEntity.badRequest().body(
+            new ErrorResponseDto(ex.getMessage())
         );
     }
 }

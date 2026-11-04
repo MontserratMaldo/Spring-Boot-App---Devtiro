@@ -1,20 +1,28 @@
 package com.devtiro.task.controller;
 
-import com.devtiro.task.domain.CreateTaskRequest;
-import com.devtiro.task.domain.dto.CreateTaskRequestDto;
-import com.devtiro.task.domain.dto.TaskDto;
-import com.devtiro.task.domain.entity.Task;
-import com.devtiro.task.mapper.TaskMapper;
-import com.devtiro.task.service.TaskService;
-import jakarta.validation.Valid;
 import java.util.List;
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.devtiro.task.domain.CreateTaskRequest;
+import com.devtiro.task.domain.UpdateTaskRequest;
+import com.devtiro.task.domain.dto.CreateTaskRequestDto;
+import com.devtiro.task.domain.dto.TaskDto;
+import com.devtiro.task.domain.dto.UpdateTaskRequestDto;
+import com.devtiro.task.domain.entity.Task;
+import com.devtiro.task.mapper.TaskMapper;
+import com.devtiro.task.service.TaskService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/tasks")
@@ -45,5 +53,15 @@ public class TaskController {
             .map(taskMapper::toDto)
             .toList();
         return ResponseEntity.ok(taskDtos);
+    }
+
+    @PutMapping("/{taskId}")
+    public ResponseEntity<TaskDto> updateTask(
+        @PathVariable UUID taskId,
+        @Valid @RequestBody UpdateTaskRequestDto dto
+    ) {
+        UpdateTaskRequest request = taskMapper.fromDto(dto);
+        Task task = taskService.updateTask(taskId, request);
+        return ResponseEntity.ok(taskMapper.toDto(task));
     }
 }
